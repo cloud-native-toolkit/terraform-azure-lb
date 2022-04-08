@@ -6,10 +6,11 @@
 ## Is outbound rule required for public load balancer?
 
 locals {
-  frontend_name = "${var.name_prefix}-frontend"
-  backend_name = "${var.name_prefix}-backend"
-  public_ip_name = "${var.name_prefix}-publicIP"
-  outbound_name = "${var.name_prefix}-outbound-rule"
+    name_prefix = var.name_prefix != "" ? var.name_prefix : var.resource_group_name
+    frontend_name = "${var.name_prefix}-frontend"
+    backend_name = "${var.name_prefix}-backend"
+    public_ip_name = "${var.name_prefix}-publicIP"
+    outbound_name = "${var.name_prefix}-outbound-rule"
 }
 
 resource "azurerm_public_ip" "load_balancer" {
@@ -24,7 +25,7 @@ resource "azurerm_public_ip" "load_balancer" {
 }
 
 resource "azurerm_lb" "load_balancer" {
-    name                = var.name_prefix
+    name                = local.name_prefix
     resource_group_name = var.resource_group_name
     location            = var.region
     sku                 = var.lb_sku

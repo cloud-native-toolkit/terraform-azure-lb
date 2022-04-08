@@ -1,8 +1,8 @@
 name: azure-lb
 type: terraform
 description: Module to provision a load balancer on Azure
-interfaces:
-  - github.com/cloud-native-toolkit/automation-modules#cluster
+#interfaces:
+#  - github.com/cloud-native-toolkit/automation-modules#cluster
 tags:
   - azure
   - lb
