@@ -35,7 +35,7 @@ versions:
           output: name
       - name: vpc_name
         moduleRef:
-          id: vnet
+          id: virtual_network
           output: name
       - name: region
         scope: global
