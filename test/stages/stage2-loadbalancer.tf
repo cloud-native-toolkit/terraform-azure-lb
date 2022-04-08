@@ -33,7 +33,7 @@ module "azure_lb_public" {
     }]
 }
 
-resource null_resource print_enabled {
+resource null_resource show_enabled {
   provisioner "local-exec" {
     command = "echo -n '${module.azure_lb_public.enabled}' > .enabled"
   }
