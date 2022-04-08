@@ -1,29 +1,15 @@
-# Starter kit for a Terraform module
-
-This is a Starter kit to help with the creation of Terraform modules. The basic structure of a Terraform module is fairly
-simple and consists of the following basic values:
-
-- README.md - provides a description of the module
-- main.tf - defiens the logic for the module
-- variables.tf (optional) - defines the input variables for the module
-- outputs.tf (optional) - defines the values that are output from the module
-
-Beyond those files, any other content can be added and organized however you see fit. For example, you can add a `scripts/` directory
-that contains shell scripts executed by a `local-exec` `null_resource` in the terraform module. The contents will depend on what your
-module does and how it does it.
-
-## Instructions for creating a new module
-
-1. Update the title and description in the README to match the module you are creating
-2. Fill out the remaining sections in the README template as appropriate
-3. Implement your logic in the in the main.tf, variables.tf, and outputs.tf
-4. Use releases/tags to manage release versions of your module
+# Azure Load Balancer
 
 ## Module overview
 
 ### Description
 
-Description of module
+Module that provisions an internal or public load balancer on Azure, including the following resources:
+- public_ip (if a public load balancer)
+- backend_address_pool
+- lb_probes
+- lb_rules
+- outbound_rules
 
 **Note:** This module follows the Terraform conventions regarding how provider configuration is defined within the Terraform template and passed into the module - https://www.terraform.io/docs/language/modules/develop/providers.html. The default provider configuration flows through to the module. If different configuration is required for a module, it can be explicitly passed in the `providers` block of the module - https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly.
 
@@ -37,30 +23,119 @@ The module depends on the following software components:
 
 #### Terraform providers
 
-- IBM Cloud provider >= 1.5.3
+- Azure provider >= 2.91.0
 
 ### Module dependencies
 
 This module makes use of the output from other modules:
 
-- Cluster - github.com/cloud-native-toolkit/terraform-ibm-container-platform.git
-- Namespace - github.com/cloud-native-toolkit/terraform-cluster-namespace.git
-- etc
+- Azure Resource group - github.com/cloud-native-toolkit/terraform-azure-resource-group
+- Azure VPC - github.com/cloud-native-toolkit/terraform-azure-vpc
+- Azure Subnets - github.com/cloud-native-toolkit/terraform-azure-vpc-subnets
 
 ### Example usage
 
 ```hcl-terraform
-module "argocd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-argocd.git"
-
-  cluster_config_file = module.dev_cluster.config_file_path
-  cluster_type        = module.dev_cluster.type
-  app_namespace       = module.dev_cluster_namespaces.tools_namespace_name
-  ingress_subdomain   = module.dev_cluster.ingress_hostname
-  olm_namespace       = module.dev_software_olm.olm_namespace
-  operator_namespace  = module.dev_software_olm.target_namespace
-  name                = "argocd"
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 2.91.0"
+    }
+  }
 }
+
+provider "azurerm" {
+  features {}
+
+  subscription_id = var.subscription_id
+#  client_id       = var.client_id
+#  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
+}
+
+module "internal_lb" {
+    source = "github.com/cloud-native-toolkit/terraform-azure-lb"
+
+    name_prefix         = "${var.name_prefix}-internal-lb"
+    resource_group_name = module.resource_group.name
+    region              = var.region
+    public              = false
+    subnet_id           = module.master_subnet.ids[0]
+    lb_sku              = "Standard"
+
+    lb_rules            = [{
+        name = "${var.name_prefix}-api-internal-rule"
+        protocol = "Tcp"
+        probe_name = "${var.name_prefix}-api-internal-probe"
+        frontend_port = 6443
+        backend_port = 6443
+        idle_timeout = 30
+        load_distribution = "Default"
+        enable_floating_point = false
+    },
+    {
+        name = "${var.name_prefix}-sint-rule"
+        protocol = "Tcp"
+        probe_name = "${var.name_prefix}-sint-probe"
+        frontend_port = 22623
+        backend_port = 22623
+        idle_timeout = 30
+        load_distribution = "Default"
+        enable_floating_point = false        
+    }]
+
+    lb_probes = [{
+        name = "${var.name_prefix}-api-internal-probe"
+        interval = 5
+        no_probes = 2
+        port = 6443
+        request_path = "/readyz"
+        protocol = "Https"
+    },
+    {
+        name = "${var.name_prefix}-sint-probe"
+        interval = 5
+        no_probes = 2
+        port = 22623
+        request_path = "/healthz"
+        protocol = "Https"
+    }]
+}
+
+module "public_lb" {
+    source = "github.com/cloud-native-toolkit/terraform-azure-lb"
+
+    name_prefix             = "${var.name_prefix}-public-lb"
+    resource_group_name     = module.resource_group.name
+    region                  = var.region
+    public                  = true
+    lb_sku                  = "Standard"
+    public_ip_sku           = "Standard"
+    public_ip_allocation    = "Static"
+    outbound_rule           = false     // This needs to be changed when SNAT can be disabled
+
+    lb_rules = [{
+        name = "${var.name_prefix}-api-external-rule"
+        protocol = "Tcp"
+        probe_name = "${var.name_prefix}-api-external-probe"
+        frontend_port = 6443
+        backend_port = 6443
+        idle_timeout = 30
+        load_distribution = "Default"
+        enable_floating_point = false 
+    }]
+
+    lb_probes = [{
+        name = "${var.name_prefix}-api-external-probe"
+        interval = 5
+        no_probes = 2
+        port = 6443
+        request_path = "/readyz"
+        protocol = "Https"        
+    }]
+}
+
 ```
 
 ## Anatomy of the Terraform module
