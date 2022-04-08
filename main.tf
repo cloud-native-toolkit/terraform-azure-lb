@@ -7,10 +7,10 @@
 
 locals {
     name_prefix = var.name_prefix != "" ? var.name_prefix : var.resource_group_name
-    frontend_name = "${var.name_prefix}-frontend"
-    backend_name = "${var.name_prefix}-backend"
-    public_ip_name = "${var.name_prefix}-publicIP"
-    outbound_name = "${var.name_prefix}-outbound-rule"
+    frontend_name = "${local.name_prefix}-frontend"
+    backend_name = "${local.name_prefix}-backend"
+    public_ip_name = "${local.name_prefix}-publicIP"
+    outbound_name = "${local.name_prefix}-outbound-rule"
 }
 
 resource "azurerm_public_ip" "load_balancer" {
