@@ -2,7 +2,7 @@ module "azure_lb_public" {
   source = "./module"
 
 
-    name_prefix             = "${var.name_prefix}-public-lb"
+    name_prefix             = "public-lb"
     resource_group_name     = module.resource_group.name
     region                  = var.region
     public                  = true
