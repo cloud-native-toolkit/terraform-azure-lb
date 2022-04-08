@@ -39,7 +39,7 @@ module "azure_lb_internal" {
     resource_group_name = module.resource_group.name
     region              = var.region
     public              = false
-    subnet_id           = module.master_subnet.ids[0]
+    subnet_id           = var.subnet_id
     lb_sku              = "Standard"
 
     lb_rules            = [{
