@@ -33,10 +33,6 @@ versions:
         moduleRef:
           id: resource_group
           output: name
-      - name: vpc_name
-        moduleRef:
-          id: virtual_network
-          output: name
       - name: region
         scope: global
 cloudProvider: azure
