@@ -10,6 +10,7 @@ module "azure_lb_public" {
     public_ip_sku           = "Standard"
     public_ip_allocation    = "Static"
     outbound_rule           = false     // This needs to be changed when SNAT can be disabled
+    enabled                 = true
 
     lb_rules = [{
         name = "api-external-rule"
@@ -32,3 +33,8 @@ module "azure_lb_public" {
     }]
 }
 
+resource null_resource print_enabled {
+  provisioner "local-exec" {
+    command = "echo -n '${module.azure_lb_public.enabled}' > .enabled"
+  }
+}

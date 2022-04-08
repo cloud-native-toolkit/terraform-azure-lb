@@ -88,3 +88,9 @@ variable "lb_probes" {
     description = "List of probes to be created"
     default = []
 }
+
+variable "enabled" {
+  type        = bool
+  description = "Flag to indicate that module should be enabled"
+  default     = true
+}
