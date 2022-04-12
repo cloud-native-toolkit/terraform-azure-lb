@@ -14,10 +14,28 @@ variable "public" {
     default     = false
 }
 
+variable "use_ipv4" {
+    type        = bool
+    description = "Support IPv4"
+    default     = true
+}
+
+variable "use_ipv6" {
+    type        = bool
+    description = "Support IPv6"
+    default     = false
+}
+
 variable "outbound_rule" {
     type        = bool
     description = "Flag to indicate whether an outbound rule is required for a public load balancer"
     default     = false
+}
+
+variable "outbound_protocol" {
+    type        = string
+    description = "Protocol for the outbound rule for a public load balancer"
+    default     = "All"
 }
 
 variable "name_prefix" {
@@ -29,6 +47,12 @@ variable "subnet_id" {
     type        = string
     description = "The subnet id to attach the load balancer frontend if private"
     default     = null
+}
+
+variable "subnet_cidr_v6" {
+    type        = string
+    description = "Subnet CIDR from which to allocate a public IPv6 address"
+    default     = ""
 }
 
 variable "lb_sku" {

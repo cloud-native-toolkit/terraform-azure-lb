@@ -38,18 +38,34 @@ output "platform" {
     ]
 }
 
-output "backend_address_id" {
-    description = "Id of the backend address pool created"
-    value       = azurerm_lb_backend_address_pool.load_balancer.id
+output "backend_address_id_v4" {
+    description = "Id of the backend IPv4 address pool created"
+    value       = var.use_ipv4 ? azurerm_lb_backend_address_pool.load_balancer_v4[0].id : null
     depends_on  = [
-      azurerm_lb_backend_address_pool.load_balancer
+      azurerm_lb_backend_address_pool.load_balancer_v4
     ]
 }
 
-output "public_ip_address" {
-    description = "Public IP allocated to the load balancer"
-    value       = var.public ? azurerm_public_ip.load_balancer[0].ip_address : null
+output "backend_address_id_v6" {
+    description = "Id of the backend IPv6 address pool created"
+    value       = var.use_ipv6 ? azurerm_lb_backend_address_pool.load_balancer_v6[0].id : null
     depends_on  = [
-      azurerm_public_ip.load_balancer
+      azurerm_lb_backend_address_pool.load_balancer_v6
+    ]  
+}
+
+output "public_ip_address_v4" {
+    description = "Public IP allocated to the load balancer"
+    value       = var.public && var.use_ipv4 ? azurerm_public_ip.load_balancer_v4[0].ip_address : null
+    depends_on  = [
+      azurerm_public_ip.load_balancer_v4
+    ]
+}
+
+output "public_ip_address_v6" {
+    description = "Public IP allocated to the load balancer"
+    value       = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].ip_address : null
+    depends_on  = [
+      azurerm_public_ip.load_balancer_v6
     ]
 }
