@@ -21,7 +21,6 @@ jobs:
           - azure_vpc
         enabled:
           - true
-          - false
       fail-fast: false
 
     env:
