@@ -14,6 +14,12 @@ variable "public" {
     default     = false
 }
 
+variable "create_fqdn" {
+    type        = bool
+    description = "Create a FQDN from the name prefix as a subddomain of Azure (<name_prefix>.<region>.cloudapp.azure.com)"
+    default     = true
+}
+
 variable "use_ipv4" {
     type        = bool
     description = "Support IPv4"

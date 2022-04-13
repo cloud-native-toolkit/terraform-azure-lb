@@ -69,3 +69,19 @@ output "public_ip_address_v6" {
       azurerm_public_ip.load_balancer_v6
     ]
 }
+
+output "public_fqdn_v4" {
+  description = "FQDN allocated to IPv4 public IP address"
+  value       = var.public && var.use_ipv4 && var.create_fqdn ? azurerm_public_ip.load_balancer_v4[0].fqdn : null
+  depends_on = [
+    azurerm_public_ip.load_balancer_v4
+  ]
+}
+
+output "public_fqdn_v6" {
+  description = "FQDN allocated to IPv6 public IP address"
+  value       = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].fqdn : null
+  depends_on = [
+    azurerm_public_ip.load_balancer_v4
+  ]
+}
