@@ -121,6 +121,7 @@ resource "azurerm_lb_rule" "load_balancer" {
     load_distribution               = each.value.load_distribution
     idle_timeout_in_minutes         = each.value.idle_timeout
     enable_floating_ip              = each.value.enable_floating_point
+    disable_outbound_snat           = var.outbound_rule && var.public ? true : false
 }
 
 // Following does not work without SNAT disabled
