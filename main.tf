@@ -16,6 +16,7 @@ locals {
     outbound_name_v6 = "${local.name_prefix}-outbound-rule_v6"
     public_ip_id_v4 = var.public && var.use_ipv4 ? azurerm_public_ip.load_balancer_v4[0].id : null
     public_ip_id_v6 = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].id : null
+    dns_label = var.dns_label != null ? var.dns_label : var.name_prefix
 }
 
 resource "azurerm_public_ip" "load_balancer_v4" {
@@ -25,7 +26,7 @@ resource "azurerm_public_ip" "load_balancer_v4" {
     resource_group_name = var.resource_group_name
     location            = var.region
     allocation_method   = var.public_ip_allocation
-    domain_name_label   = var.dns_label
+    domain_name_label   = var.create_fqdn ? local.dns_label : null
     sku                 = var.public_ip_sku
 }
 
@@ -36,7 +37,7 @@ resource "azurerm_public_ip" "load_balancer_v6" {
     resource_group_name = var.resource_group_name
     location            = var.region
     allocation_method   = var.public_ip_allocation
-    domain_name_label   = var.dns_label
+    domain_name_label   = var.create_fqdn ? local.dns_label : null
     sku                 = var.public_ip_sku
 }
 
