@@ -1,9 +1,5 @@
 # Create a load balancer and backend address pool
 
-##
-## TO do
-## Is outbound rule required for public load balancer?
-
 locals {
     name_prefix = var.name_prefix != "" ? var.name_prefix : var.resource_group_name
     frontend_name_v4 = "${local.name_prefix}-frontend_v4"
@@ -125,7 +121,6 @@ resource "azurerm_lb_rule" "load_balancer" {
     disable_outbound_snat           = var.outbound_rule && var.public ? true : false
 }
 
-// Following does not work without SNAT disabled
 resource "azurerm_lb_outbound_rule" "load_balancer_v4" {
     count = var.public && var.outbound_rule && var.use_ipv4 ? 1 : 0
 
