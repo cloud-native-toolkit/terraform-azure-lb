@@ -10,6 +10,7 @@ Module that provisions an internal or public load balancer on Azure, including t
 - lb_probes
 - lb_rules
 - outbound_rules
+- FQDN for public IP
 
 **Note:** This module follows the Terraform conventions regarding how provider configuration is defined within the Terraform template and passed into the module - https://www.terraform.io/docs/language/modules/develop/providers.html. The default provider configuration flows through to the module. If different configuration is required for a module, it can be explicitly passed in the `providers` block of the module - https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly.
 
@@ -49,8 +50,8 @@ provider "azurerm" {
   features {}
 
   subscription_id = var.subscription_id
-#  client_id       = var.client_id
-#  client_secret   = var.client_secret
+  client_id       = var.client_id
+  client_secret   = var.client_secret
   tenant_id       = var.tenant_id
 }
 
@@ -63,6 +64,8 @@ module "internal_lb" {
     public              = false
     subnet_id           = module.master_subnet.ids[0]
     lb_sku              = "Standard"
+    use_ipv4            = true
+    use_ipv6            = false
 
     lb_rules            = [{
         name = "${var.name_prefix}-api-internal-rule"
@@ -113,7 +116,11 @@ module "public_lb" {
     lb_sku                  = "Standard"
     public_ip_sku           = "Standard"
     public_ip_allocation    = "Static"
-    outbound_rule           = false     // This needs to be changed when SNAT can be disabled
+    outbound_rule           = false    
+    use_ipv4                = true
+    use_ipv6                = false
+    dns_label               = "${var.name_prefix}-aro"
+    create_fqdn             = true 
 
     lb_rules = [{
         name = "${var.name_prefix}-api-external-rule"
