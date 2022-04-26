@@ -22,7 +22,7 @@ versions:
             version: ">= 1.0.1"
       - id: subnets
         refs:
-          - source: github.com/cloud-native-toolkit/terraform-azure-subnets
+          - source: github.com/cloud-native-toolkit/terraform-azure-vpc-subnets
             version: ">= 1.2.0"
       - id: sync
         refs: []
