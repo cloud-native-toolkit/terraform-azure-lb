@@ -31,8 +31,8 @@ The module depends on the following software components:
 This module makes use of the output from other modules:
 
 - Azure Resource group - github.com/cloud-native-toolkit/terraform-azure-resource-group
-- Azure VPC - github.com/cloud-native-toolkit/terraform-azure-vpc
-- Azure Subnets - github.com/cloud-native-toolkit/terraform-azure-vpc-subnets
+- Azure VPC - github.com/cloud-native-toolkit/terraform-azure-vnet
+- Azure Subnets - github.com/cloud-native-toolkit/terraform-azure-subnets
 
 ### Example usage
 

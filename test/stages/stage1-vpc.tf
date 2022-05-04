@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/cloud-native-toolkit/terraform-azure-vpc"
+  source = "github.com/cloud-native-toolkit/terraform-azure-vnet"
 
   resource_group_name = module.resource_group.name
   region              = var.region
