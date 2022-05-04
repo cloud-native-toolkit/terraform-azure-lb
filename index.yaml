@@ -16,6 +16,149 @@ versions:
             version: '>= 1.0.0'
       - id: virtual_network
         refs:
+          - source: github.com/cloud-native-toolkit/terraform-azure-vnet
+            version: '>= 1.0.2'
+      - id: subnets
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-azure-subnets
+            version: '>= 1.2.0'
+      - id: sync
+        refs: []
+        interface: github.com/cloud-native-toolkit/automation-modules#sync
+        optional: true
+    variables:
+      - name: resource_group_name
+        type: string
+        description: >-
+          The name of the Azure resource group where the VPC has been
+          provisioned
+        moduleRef:
+          id: resource_group
+          output: name
+      - name: region
+        type: string
+        description: The Azure location where the load balancer will be installed
+        scope: global
+      - name: public
+        type: bool
+        description: Flag to indicate whether a public IP is required
+        default: false
+      - name: create_fqdn
+        type: bool
+        description: >-
+          Create a FQDN from the name prefix as a subddomain of Azure
+          (<name_prefix>.<region>.cloudapp.azure.com)
+        default: true
+      - name: use_ipv4
+        type: bool
+        description: Support IPv4
+        default: true
+      - name: use_ipv6
+        type: bool
+        description: Support IPv6
+        default: false
+      - name: outbound_rule
+        type: bool
+        description: >-
+          Flag to indicate whether an outbound rule is required for a public
+          load balancer
+        default: false
+      - name: outbound_protocol
+        type: string
+        description: Protocol for the outbound rule for a public load balancer
+        default: All
+      - name: name_prefix
+        type: string
+        description: Prefix for the name of the load balancer to be created
+      - name: subnet_id
+        type: string
+        description: The subnet id to attach the load balancer frontend if private
+        default: 'null'
+      - name: subnet_cidr_v6
+        type: string
+        description: Subnet CIDR from which to allocate a public IPv6 address
+        default: ''
+      - name: lb_sku
+        type: string
+        description: Azure Load Balancer SKU type - Basic, Standard or Gateway
+        default: Standard
+      - name: private_ip_allocation
+        type: string
+        description: Private IP address allocation method - Static or Dynamic
+        default: Dynamic
+      - name: public_ip_allocation
+        type: string
+        description: Public IP address allocation method - Static or Dynamic
+        default: Static
+      - name: dns_label
+        type: string
+        description: DNS label for public IP
+        default: 'null'
+      - name: public_ip_sku
+        type: string
+        description: Public IP SKU - Basic or Standard
+        default: Basic
+      - name: lb_rules
+        type: |-
+          list(object({
+                  name=string,
+                  protocol=string,
+                  probe_name=string,
+                  frontend_port=number,
+                  backend_port=number,
+                  load_distribution=string,
+                  idle_timeout=number,
+                  enable_floating_point=bool
+              }))
+        description: List of the load balancer rules to be created
+        default: '[]'
+      - name: lb_probes
+        type: |-
+          list(object({
+                  name=string,
+                  interval=number,
+                  no_probes=number,
+                  port=number,
+                  request_path=string,
+                  protocol=string
+              }))
+        description: List of probes to be created
+        default: '[]'
+    version: v1.0.1
+    outputs:
+      - name: name
+        description: Name of the load balancer created
+      - name: id
+        description: Created load balancer identification
+      - name: resource_group_name
+        description: Resource group load balancer was created in
+      - name: region
+        description: Region where load balancer was created
+      - name: platform
+        description: Platform for load balancer
+      - name: backend_address_id_v4
+        description: Id of the backend IPv4 address pool created
+      - name: backend_address_id_v6
+        description: Id of the backend IPv6 address pool created
+      - name: public_ip_address_v4
+        description: Public IP allocated to the load balancer
+      - name: public_ip_address_v6
+        description: Public IP allocated to the load balancer
+      - name: public_fqdn_v4
+        description: FQDN allocated to IPv4 public IP address
+      - name: public_fqdn_v6
+        description: FQDN allocated to IPv6 public IP address
+  - platforms: []
+    providers:
+      - name: azurerm
+        source: hashicorp/azurerm
+    dependencies:
+      - id: resource_group
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-azure-resource-group
+            version: '>= 1.0.0'
+      - id: virtual_network
+        refs:
           - source: github.com/cloud-native-toolkit/terraform-azure-vpc
             version: '>= 1.0.1'
       - id: subnets
