@@ -91,6 +91,18 @@ variable "public_ip_sku" {
     default = "Basic"
 }
 
+variable "public_ip_name_v4" {
+    type = string
+    description = "Public IP V4 Name"
+    default = ""
+}
+
+variable "public_ip_name_v6" {
+    type = string
+    description = "Public IP V6 Name"
+    default = ""
+}
+
 variable "lb_rules" {
     type = list(object({
         name=string,

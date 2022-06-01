@@ -56,7 +56,7 @@ output "backend_address_id_v6" {
 
 output "public_ip_address_v4" {
     description = "Public IP allocated to the load balancer"
-    value       = var.public && var.use_ipv4 ? azurerm_public_ip.load_balancer_v4[0].ip_address : null
+    value       = var.public && var.use_ipv4 ? var.public_ip_name_v4 == "" ? azurerm_public_ip.load_balancer_v4[0].ip_address : data.azurerm_public_ip.public_ip_v4[0].ip_address : null
     depends_on  = [
       azurerm_public_ip.load_balancer_v4
     ]
@@ -64,7 +64,7 @@ output "public_ip_address_v4" {
 
 output "public_ip_address_v6" {
     description = "Public IP allocated to the load balancer"
-    value       = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].ip_address : null
+    value       = var.public && var.use_ipv6 ? var.public_ip_name_v6 == "" ? azurerm_public_ip.load_balancer_v6[0].ip_address : data.azurerm_public_ip.public_ip_v6[0].ip_address : null
     depends_on  = [
       azurerm_public_ip.load_balancer_v6
     ]
@@ -72,7 +72,7 @@ output "public_ip_address_v6" {
 
 output "public_fqdn_v4" {
   description = "FQDN allocated to IPv4 public IP address"
-  value       = var.public && var.use_ipv4 && var.create_fqdn ? azurerm_public_ip.load_balancer_v4[0].fqdn : null
+  value       = var.public && var.use_ipv4 && var.create_fqdn ? var.public_ip_name_v4 == "" ? azurerm_public_ip.load_balancer_v4[0].fqdn : data.azurerm_public_ip.public_ip_v4[0].fqdn : null
   depends_on = [
     azurerm_public_ip.load_balancer_v4
   ]
@@ -80,7 +80,7 @@ output "public_fqdn_v4" {
 
 output "public_fqdn_v6" {
   description = "FQDN allocated to IPv6 public IP address"
-  value       = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].fqdn : null
+  value       = var.public && var.use_ipv6 ? var.public_ip_name_v6 == "" ? azurerm_public_ip.load_balancer_v6[0].fqdn : data.azurerm_public_ip.public_ip_v6[0].fqdn : null
   depends_on = [
     azurerm_public_ip.load_balancer_v4
   ]

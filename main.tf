@@ -1,5 +1,4 @@
 # Create a load balancer and backend address pool
-
 locals {
     name_prefix = var.name_prefix != "" ? var.name_prefix : var.resource_group_name
     frontend_name_v4 = "${local.name_prefix}-frontend_v4"
@@ -10,13 +9,25 @@ locals {
     public_ip_name_v6 = "${local.name_prefix}-publicIP_v6"
     outbound_name_v4 = "${local.name_prefix}-outbound-rule_v4"
     outbound_name_v6 = "${local.name_prefix}-outbound-rule_v6"
-    public_ip_id_v4 = var.public && var.use_ipv4 ? azurerm_public_ip.load_balancer_v4[0].id : null
-    public_ip_id_v6 = var.public && var.use_ipv6 ? azurerm_public_ip.load_balancer_v6[0].id : null
+    public_ip_id_v4 = var.public && var.use_ipv4 ? var.public_ip_name_v4 == "" ?  azurerm_public_ip.load_balancer_v4[0].id : data.azurerm_public_ip.public_ip_v4[0].id : null
+    public_ip_id_v6 = var.public && var.use_ipv6 ? var.public_ip_name_v6 == "" ? azurerm_public_ip.load_balancer_v6[0].id : data.azurerm_public_ip.public_ip_v6[0].id : null
     dns_label = var.dns_label != null ? var.dns_label : var.name_prefix
 }
 
+data "azurerm_public_ip" "public_ip_v4" {
+    count = var.public_ip_name_v4 != "" ? 1 : 0
+  name = var.public_ip_name_v4
+  resource_group_name = var.resource_group_name
+}
+
+data "azurerm_public_ip" "public_ip_v6" {
+    count = var.public_ip_name_v6 != "" ? 1 : 0
+  name = var.public_ip_name_v6
+  resource_group_name = var.resource_group_name
+}
+
 resource "azurerm_public_ip" "load_balancer_v4" {
-    count = var.public && var.use_ipv4 ? 1 : 0
+    count = var.public && var.use_ipv4 && var.public_ip_name_v4 == "" ? 1 : 0
 
     name                = local.public_ip_name_v4
     resource_group_name = var.resource_group_name
@@ -27,7 +38,7 @@ resource "azurerm_public_ip" "load_balancer_v4" {
 }
 
 resource "azurerm_public_ip" "load_balancer_v6" {
-    count = var.public && var.use_ipv6 ? 1 : 0
+    count = var.public && var.use_ipv6 && var.public_ip_name_v6 == "" ? 1 : 0
 
     name                = local.public_ip_name_v6
     resource_group_name = var.resource_group_name
