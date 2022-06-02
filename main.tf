@@ -35,6 +35,7 @@ resource "azurerm_public_ip" "load_balancer_v4" {
     allocation_method   = var.public_ip_allocation
     domain_name_label   = var.create_fqdn ? local.dns_label : null
     sku                 = var.public_ip_sku
+    ip_version          = "IPv4"
 }
 
 resource "azurerm_public_ip" "load_balancer_v6" {
@@ -46,6 +47,7 @@ resource "azurerm_public_ip" "load_balancer_v6" {
     allocation_method   = var.public_ip_allocation
     domain_name_label   = var.create_fqdn ? local.dns_label : null
     sku                 = var.public_ip_sku
+    ip_version          = "IPv6"
 }
 
 resource "azurerm_lb" "load_balancer" {
