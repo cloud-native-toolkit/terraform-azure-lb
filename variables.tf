@@ -88,7 +88,7 @@ variable "dns_label" {
 variable "public_ip_sku" {
     type = string
     description = "Public IP SKU - Basic or Standard"
-    default = "Basic"
+    default = "Standard"
 }
 
 variable "public_ip_name_v4" {
