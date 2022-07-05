@@ -36,5 +36,5 @@ versions:
       - name: subnet_id
         moduleRef:
           id: subnets
-          output: id
+          output: ids[0]
 cloudProvider: azure
