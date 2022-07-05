@@ -13,15 +13,15 @@ versions:
       - id: resource_group
         refs:
           - source: github.com/cloud-native-toolkit/terraform-azure-resource-group
-            version: ">= 1.0.0"
+            version: ">= 1.1.0"
       - id: virtual_network
         refs:
           - source: github.com/cloud-native-toolkit/terraform-azure-vnet
-            version: ">= 1.0.2"
+            version: ">= 1.1.1"
       - id: subnets
         refs:
           - source: github.com/cloud-native-toolkit/terraform-azure-subnets
-            version: ">= 1.2.0"
+            version: ">= 1.3.2"
       - id: sync
         refs: []
         interface: github.com/cloud-native-toolkit/automation-modules#sync
@@ -33,4 +33,8 @@ versions:
           output: name
       - name: region
         scope: global
+      - name: subnet_id
+        moduleRef:
+          id: subnets
+          output: id
 cloudProvider: azure
