@@ -33,8 +33,4 @@ versions:
           output: name
       - name: region
         scope: global
-      - name: subnet_id
-        moduleRef:
-          id: subnets
-          value: id
 cloudProvider: azure
