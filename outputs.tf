@@ -88,7 +88,7 @@ output "public_fqdn_v6" {
 
 output "backend_pool_id_v4" {
   description = "Backend pool ID for IPv4"
-  value       = azurerm_lb_backend_address_pool.load_balancer_v4[0].id
+  value       = var.use_ipv4 ? azurerm_lb_backend_address_pool.load_balancer_v4[0].id : null
   depends_on  = [
     azurerm_lb_backend_address_pool.load_balancer_v4
   ]
@@ -96,7 +96,7 @@ output "backend_pool_id_v4" {
 
 output "backend_pool_id_v6" {
   description = "Backend pool ID for IPv6"
-  value       = azurerm_lb_backend_address_pool.load_balancer_v6[0].id
+  value       = var.use_ipv6 ? azurerm_lb_backend_address_pool.load_balancer_v6[0].id : null
   depends_on  = [
     azurerm_lb_backend_address_pool.load_balancer_v6
   ]
