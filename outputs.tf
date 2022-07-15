@@ -14,6 +14,24 @@ output "id" {
     ]
 }
 
+output "internal_ip_address_v4" {
+    description = "Internal IP (IPv4) of the created load balancer (only for non-public load balancer)" 
+    value = var.use_ipv4 && ! var.public ? azurerm_lb.load_balancer.private_ip_addresses[0] : null
+
+    depends_on = [
+      azurerm_lb.load_balancer
+    ]
+}
+
+output "internal_ip_address_v6" {
+    description = "Internal IP (IPv6) of the created load balancer (only for non-public load balancer)" 
+    value = var.use_ipv6 && ! var.public ? azurerm_lb.load_balancer.private_ip_addresses[1] : null
+
+    depends_on = [
+      azurerm_lb.load_balancer
+    ]
+}
+
 output "resource_group_name" {
     description = "Resource group load balancer was created in"
     value       = var.resource_group_name
